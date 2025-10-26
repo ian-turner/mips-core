@@ -89,7 +89,7 @@ module cpu (
         .rd(regdest ? rd : rt),
         .readdata1(reg_readdata1),
         .readdata2(reg_readdata2),
-        .writedata(alu_result)
+        .writedata(memtoreg ? data_mem[alu_result] : alu_result)
     );
 
     always @(posedge clk) begin
@@ -98,6 +98,9 @@ module cpu (
         end else begin
             program_counter <= program_counter + 12'b1;
         end
+
+        // data memory
+        if (memwrite) data_mem[alu_result] <= reg_readdata2;
     end
 
 endmodule

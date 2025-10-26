@@ -8,6 +8,7 @@ module alucontrol (
         aluop = 4'b0000;
         if (opcode == 6'h08) aluop = 4'b0010; // addi
         else if (opcode == 6'h00 && funct == 6'h20) aluop = 4'b0010; // add
+        else if (opcode == 6'h23 || opcode == 6'h2B) aluop = 4'b0010; // lw, sw
     end
 
 endmodule
