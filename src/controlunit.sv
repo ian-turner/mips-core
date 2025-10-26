@@ -3,7 +3,7 @@ module controlunit (
     output logic regdest,
     output logic regwrite,
     output logic alusrc,
-    output logic pcsrc,
+    output logic jump,
     output logic memread,
     output logic memwrite,
     output logic memtoreg
@@ -12,7 +12,7 @@ module controlunit (
     always_comb begin
         regdest = 1'b0;
         regwrite = 1'b0;
-        pcsrc = 1'b0;
+        jump = 1'b0;
         alusrc = 1'b0;
         memread = 1'b0;
         memwrite = 1'b0;
@@ -41,6 +41,7 @@ module controlunit (
                 memwrite = 1'b1;
                 alusrc = 1'b1;
             end
+            6'h02 : jump = 1'b1;
         endcase
     end
 

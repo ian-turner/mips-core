@@ -16,7 +16,7 @@ module cpu (
     logic [31:0] instruction;
     assign instruction = program_mem[program_counter];
 
-    initial $readmemh("/home/iant/projects/mips-core/build/mem.hex", program_mem, 0, 3);
+    initial $readmemh("/home/iant/projects/mips-core/build/mem.hex", program_mem, 0, 2);
 
     // defining outputs for decoder
 
@@ -27,6 +27,7 @@ module cpu (
     logic [4:0] shamt;
     logic [5:0] funct;
     logic [31:0] immediate;
+    logic [11:0] jumpaddr;
 
     decoder decoder_ (
         .instruction(instruction),
@@ -36,7 +37,8 @@ module cpu (
         .rd(rd),
         .shamt(shamt),
         .funct(funct),
-        .immediate(immediate)
+        .immediate(immediate),
+        .jumpaddr(jumpaddr)
     );
 
     // defining wires for control signals
@@ -44,7 +46,7 @@ module cpu (
     logic regdest;
     logic regwrite;
     logic alusrc;
-    logic pcsrc;
+    logic jump;
     logic memtoreg;
 
     controlunit controlunit_ (
@@ -52,7 +54,7 @@ module cpu (
         .regdest(regdest),
         .regwrite(regwrite),
         .alusrc(alusrc),
-        .pcsrc(pcsrc),
+        .jump(jump),
         .memread(memread),
         .memwrite(memwrite),
         .memtoreg(memtoreg)
@@ -101,7 +103,7 @@ module cpu (
         if (reset) begin
             program_counter <= 12'b0;
         end else begin
-            program_counter <= program_counter + 12'b1;
+            program_counter <= jump ? jumpaddr : program_counter + 12'b1;
         end
     end
 

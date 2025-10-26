@@ -6,7 +6,8 @@ module decoder (
     output logic [4:0] rd,
     output logic [4:0] shamt,
     output logic [5:0] funct,
-    output logic [31:0] immediate
+    output logic [31:0] immediate,
+    output logic [11:0] jumpaddr
 );
 
     assign opcode = instruction[31:26];
@@ -17,5 +18,6 @@ module decoder (
     assign funct = instruction[5:0];
 
     always @* immediate = {{16{instruction[15]}}, instruction[15:0]};
+    always @* jumpaddr = instruction[11:0];
 
 endmodule
