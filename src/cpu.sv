@@ -1,13 +1,17 @@
 module cpu (
     input logic clk,
-    input logic reset
+    input logic reset,
+    input logic [31:0] mem_readdata,
+    output logic memread,
+    output logic memwrite,
+    output logic [31:0] mem_addr,
+    output logic [31:0] mem_writedata
 );
 
     // program and data memory, program counter
 
     logic [11:0] program_counter;
     logic [31:0] program_mem [4095:0];
-    logic [31:0] data_mem [4095:0];
 
     logic [31:0] instruction;
     assign instruction = program_mem[program_counter];
@@ -41,8 +45,6 @@ module cpu (
     logic regwrite;
     logic alusrc;
     logic pcsrc;
-    logic memread;
-    logic memwrite;
     logic memtoreg;
 
     controlunit controlunit_ (
@@ -76,6 +78,9 @@ module cpu (
         .zero(alu_zero)
     );
 
+    always @* mem_addr = alu_result;
+    always @* mem_writedata = reg_readdata2;
+
     // register file
 
     logic [31:0] reg_readdata1;
@@ -89,7 +94,7 @@ module cpu (
         .rd(regdest ? rd : rt),
         .readdata1(reg_readdata1),
         .readdata2(reg_readdata2),
-        .writedata(memtoreg ? data_mem[alu_result] : alu_result)
+        .writedata(memtoreg ? mem_readdata : alu_result)
     );
 
     always @(posedge clk) begin
@@ -98,9 +103,6 @@ module cpu (
         end else begin
             program_counter <= program_counter + 12'b1;
         end
-
-        // data memory
-        if (memwrite) data_mem[alu_result] <= reg_readdata2;
     end
 
 endmodule

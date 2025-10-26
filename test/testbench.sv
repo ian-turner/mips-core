@@ -5,8 +5,30 @@ module testbench;
     logic clk;
     logic reset;
 
-    // device under test (the cpu module)
-    cpu cpu_ (clk, reset);
+    logic memwrite;
+    logic memread;
+    logic [31:0] mem_addr;
+    logic [31:0] mem_writedata;
+    logic [31:0] mem_readdata;
+
+    datamem datamem_ (
+        .clk(clk),
+        .memwrite(memwrite),
+        .memread(memread),
+        .addr(mem_addr),
+        .writedata(mem_writedata),
+        .readdata(mem_readdata)
+    );
+
+    cpu cpu_ (
+        .clk(clk),
+        .reset(reset),
+        .memwrite(memwrite),
+        .memread(memread),
+        .mem_addr(mem_addr),
+        .mem_writedata(mem_writedata),
+        .mem_readdata(mem_readdata)
+    );
 
     initial begin
         $dumpfile("build/testbench.vcd");
