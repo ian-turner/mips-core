@@ -22,6 +22,7 @@ module controlunit (
             6'b000000 : begin
                 // R-type instructions
                 regwrite = 1'b1;
+                regdest = 1'b1;
             end
             6'b001000 : begin
                 // addi
