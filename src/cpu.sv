@@ -56,6 +56,19 @@ module cpu (
         .memtoreg(memtoreg)
     );
 
+    // register file
+
+    logic [31:0] reg_readdata1;
+    logic [31:0] reg_readdata2;
+
+    regfile regfile_ (
+        .clk(clk),
+        .regwrite(regwrite),
+        .rs1(rs),
+        .readdata1(reg_readdata1),
+        .readdata2(reg_readdata2)
+    );
+
     always @(posedge clk) begin
         if (reset) begin
             program_counter <= 12'b0;
