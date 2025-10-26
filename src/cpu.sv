@@ -16,7 +16,7 @@ module cpu (
     logic [31:0] instruction;
     assign instruction = program_mem[program_counter];
 
-    initial $readmemh("build/mem.hex", program_mem, 0, 3);
+    initial $readmemh("/home/iant/projects/mips-core/build/mem.hex", program_mem, 0, 3);
 
     // defining outputs for decoder
 

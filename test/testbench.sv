@@ -11,7 +11,7 @@ module testbench;
     logic [31:0] mem_writedata;
     logic [31:0] mem_readdata;
 
-    datamem datamem_ (
+    mmio mmio_ (
         .clk(clk),
         .memwrite(memwrite),
         .memread(memread),
