@@ -18,7 +18,17 @@ module controlunit (
         memwrite = 1'b0;
         memtoreg = 1'b0;
 
-        
+        case (opcode)
+            6'b000000 : begin
+                // R-type instructions
+                regwrite = 1'b1;
+            end
+            6'b001000 : begin
+                // addi
+                regwrite = 1'b1;
+                alusrc = 1'b1;
+            end
+        endcase
     end
 
 endmodule

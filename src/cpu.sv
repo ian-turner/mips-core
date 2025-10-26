@@ -56,6 +56,26 @@ module cpu (
         .memtoreg(memtoreg)
     );
 
+    // alu
+
+    logic alu_zero;
+    logic [3:0] aluop;
+    logic [31:0] alu_result;
+
+    alucontrol alucontrol_ (
+        .opcode(opcode),
+        .funct(funct),
+        .aluop(aluop)
+    );
+
+    alu alu_ (
+        .op(aluop),
+        .A(reg_readdata1),
+        .B(alusrc ? immediate : reg_readdata2),
+        .result(alu_result),
+        .zero(alu_zero)
+    );
+
     // register file
 
     logic [31:0] reg_readdata1;
@@ -65,8 +85,11 @@ module cpu (
         .clk(clk),
         .regwrite(regwrite),
         .rs1(rs),
+        .rs2(rt),
+        .rd(regdest ? rd : rt),
         .readdata1(reg_readdata1),
-        .readdata2(reg_readdata2)
+        .readdata2(reg_readdata2),
+        .writedata(alu_result)
     );
 
     always @(posedge clk) begin
