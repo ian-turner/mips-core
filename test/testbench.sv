@@ -11,13 +11,18 @@ module testbench;
     logic [31:0] mem_writedata;
     logic [31:0] mem_readdata;
 
+    logic [15:0] hex;
+
     mmio mmio_ (
         .clk(clk),
         .memwrite(memwrite),
         .memread(memread),
         .addr(mem_addr),
         .writedata(mem_writedata),
-        .readdata(mem_readdata)
+        .readdata(mem_readdata),
+
+        .sw(16'd53),
+        .hex(hex)
     );
 
     cpu cpu_ (

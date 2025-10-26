@@ -29,7 +29,8 @@ module top (
         .writedata(mem_writedata),
         .readdata(mem_readdata),
 
-        .hex(hex)
+        .hex(hex),
+        .sw(sw)
     );
 
     cpu cpu_ (
