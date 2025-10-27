@@ -10,18 +10,20 @@ module mmio (
     input logic [15:0] sw,
     output logic [15:0] hex
 );
-    // data memory
+    logic [31:0] data_mem [1023:0];
 
-    logic [31:0] data_mem [4095:0];
-    always @* readdata = (addr == 32'd2002) ? {16'b0, sw}
+    // reading from memory/io
+    always @* readdata = (addr == 32'h404) ? {16'b0, sw}
         : data_mem[addr];
 
     always @(posedge clk) begin
-        if (memwrite) data_mem[addr] <= writedata;
+        // writing to memory/io
+        if (memwrite) begin
+            case (addr)
+                32'h400 : hex <= writedata;
+                default : data_mem[addr] <= writedata;
+            endcase
+        end
     end
-
-    // memory-mapped io
-
-    always @* hex = data_mem[32'd2000][15:0];
 
 endmodule

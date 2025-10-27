@@ -35,7 +35,7 @@ module top (
 
     cpu cpu_ (
         .clk(clk),
-        .reset(sw[0]),
+        .reset(btnC),
         .memread(memread),
         .memwrite(memwrite),
         .mem_addr(mem_addr),

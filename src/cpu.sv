@@ -11,7 +11,7 @@ module cpu (
     // program and data memory, program counter
 
     logic [11:0] program_counter;
-    logic [31:0] program_mem [4095:0];
+    logic [31:0] program_mem [1023:0];
 
     logic [31:0] instruction;
     assign instruction = program_mem[program_counter];
