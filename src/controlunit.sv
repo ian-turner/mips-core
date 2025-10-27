@@ -5,6 +5,7 @@ module controlunit (
     output logic regwrite,
     output logic [1:0] alusrc,
     output logic jump,
+    output logic branch,
     output logic memread,
     output logic memwrite,
     output logic memtoreg
@@ -14,6 +15,7 @@ module controlunit (
         regdest = 1'b0;
         regwrite = 1'b0;
         jump = 1'b0;
+        branch = 1'b0;
         alusrc = 2'b0;
         memread = 1'b0;
         memwrite = 1'b0;
@@ -24,7 +26,7 @@ module controlunit (
                 // R-type instructions
                 regwrite = 1'b1;
                 regdest = 1'b1;
-                if (funct == 6'h00) begin // sll
+                if (funct == 6'h00 || funct == 6'h02) begin // sll, srl
                     alusrc = 2'd2;
                 end
             end
@@ -43,6 +45,11 @@ module controlunit (
             6'h2B : begin
                 // sw
                 memwrite = 1'b1;
+                alusrc = 2'b1;
+            end
+            6'h04 : begin
+                // beq
+                branch = 1'b1;
                 alusrc = 2'b1;
             end
             6'h02 : jump = 1'b1;

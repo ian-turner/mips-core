@@ -47,6 +47,7 @@ module cpu #(parameter PROG_MEM_WORDS = 1024) (
     logic regwrite;
     logic [1:0] alusrc;
     logic jump;
+    logic branch;
     logic memtoreg;
 
     controlunit controlunit_ (
@@ -56,6 +57,7 @@ module cpu #(parameter PROG_MEM_WORDS = 1024) (
         .regwrite(regwrite),
         .alusrc(alusrc),
         .jump(jump),
+        .branch(branch),
         .memread(memread),
         .memwrite(memwrite),
         .memtoreg(memtoreg)
@@ -100,11 +102,14 @@ module cpu #(parameter PROG_MEM_WORDS = 1024) (
         .writedata(memtoreg ? mem_readdata : alu_result)
     );
 
+    logic [11:0] branchaddr;
+    assign branchaddr = program_counter + immediate[11:0] + 12'b1;
+
     always @(posedge clk) begin
         if (reset) begin
             program_counter <= 12'b0;
         end else begin
-            program_counter <= jump ? jumpaddr : program_counter + 12'b1;
+            program_counter <= (branch && alu_zero) ? branchaddr : jump ? jumpaddr : program_counter + 12'b1;
         end
     end
 
