@@ -1,4 +1,4 @@
-module cpu (
+module cpu #(parameter PROG_MEM_WORDS = 1024) (
     input logic clk,
     input logic reset,
     input logic [31:0] mem_readdata,
@@ -11,12 +11,12 @@ module cpu (
     // program and data memory, program counter
 
     logic [11:0] program_counter;
-    logic [31:0] program_mem [1023:0];
+    logic [31:0] program_mem [PROG_MEM_WORDS-1:0];
 
     logic [31:0] instruction;
     assign instruction = program_mem[program_counter];
 
-    initial $readmemh("/home/iant/projects/mips-core/build/mem.hex", program_mem, 0, 4);
+    initial $readmemh("/home/iant/projects/mips-core/build/mem.hex", program_mem, 0);
 
     // defining outputs for decoder
 
@@ -45,12 +45,13 @@ module cpu (
 
     logic regdest;
     logic regwrite;
-    logic alusrc;
+    logic [1:0] alusrc;
     logic jump;
     logic memtoreg;
 
     controlunit controlunit_ (
         .opcode(opcode),
+        .funct(funct),
         .regdest(regdest),
         .regwrite(regwrite),
         .alusrc(alusrc),
@@ -74,8 +75,8 @@ module cpu (
 
     alu alu_ (
         .op(aluop),
-        .A(reg_readdata1),
-        .B(alusrc ? immediate : reg_readdata2),
+        .A((alusrc == 2'd2) ? reg_readdata2 : reg_readdata1),
+        .B((alusrc == 2'd0) ? reg_readdata2 : (alusrc == 2'd1) ? immediate : shamt),
         .result(alu_result),
         .zero(alu_zero)
     );

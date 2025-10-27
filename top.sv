@@ -30,12 +30,18 @@ module top (
         .readdata(mem_readdata),
 
         .hex(hex),
-        .sw(sw)
+        .led(led),
+        .sw(sw),
+        .btnC(btnC),
+        .btnU(btnU),
+        .btnL(btnL),
+        .btnR(btnR),
+        .btnD(btnD)
     );
 
     cpu cpu_ (
         .clk(clk),
-        .reset(btnC),
+        .reset(btnL && btnR),
         .memread(memread),
         .memwrite(memwrite),
         .mem_addr(mem_addr),

@@ -7,9 +7,10 @@ module alu (
 );
 
     assign result =
-        (op == 4'b0000) ? A & B :
-        (op == 4'b0001) ? A | B :
-        (op == 4'b0010) ? A + B :
+        (op == 4'd0) ? A & B :
+        (op == 4'd1) ? A | B :
+        (op == 4'd2) ? A + B :
+        (op == 4'd3) ? A << B :
         (op == 4'b0110) ? A - B :
         (op == 4'b0111) ? (A < B) :
         (op == 4'b1100) ? ~(A | B) :
