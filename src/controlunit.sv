@@ -50,7 +50,7 @@ module controlunit (
             6'h04 : begin
                 // beq
                 branch = 1'b1;
-                alusrc = 2'b1;
+                alusrc = 2'd0;
             end
             6'h02 : jump = 1'b1;
         endcase

@@ -22,7 +22,8 @@ module testbench;
         .readdata(mem_readdata),
 
         .sw(16'd53),
-        .hex(hex)
+        .hex(hex),
+        .btnC(1'b1)
     );
 
     cpu cpu_ (
