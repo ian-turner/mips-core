@@ -16,7 +16,7 @@ module cpu #(parameter PROG_MEM_WORDS = 1024) (
     logic [31:0] instruction;
     assign instruction = program_mem[program_counter];
 
-    initial $readmemh("/home/iant/projects/mips-core/build/prog.hex", program_mem, 0);
+    initial $readmemh("prog.hex", program_mem, 0);
 
     // defining outputs for decoder
 
@@ -83,6 +83,8 @@ module cpu #(parameter PROG_MEM_WORDS = 1024) (
         .zero(alu_zero)
     );
 
+    // memory I/O
+
     always @* mem_addr = alu_result;
     always @* mem_writedata = reg_readdata2;
 
@@ -102,6 +104,7 @@ module cpu #(parameter PROG_MEM_WORDS = 1024) (
         .writedata(memtoreg ? mem_readdata : alu_result)
     );
 
+    // branching logic
     logic [11:0] branchaddr;
     assign branchaddr = program_counter + immediate[11:0] + 12'b1;
 
