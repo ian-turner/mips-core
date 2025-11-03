@@ -1,11 +1,8 @@
 module cpu #(parameter PROG_MEM_WORDS = 1024) (
-    input logic clk,
-    input logic reset,
+    input logic clk, reset,
     input logic [31:0] mem_readdata,
-    output logic memread,
-    output logic memwrite,
-    output logic [31:0] mem_addr,
-    output logic [31:0] mem_writedata
+    output logic memread, memwrite,
+    output logic [31:0] mem_addr, mem_writedata
 );
 
     // program and data memory, program counter
@@ -45,8 +42,9 @@ module cpu #(parameter PROG_MEM_WORDS = 1024) (
 
     logic regdest;
     logic regwrite;
-    logic [1:0] alusrc;
-    logic jump;
+    logic alusrcA;
+    logic [1:0] alusrcB;
+    logic jump, jump_return;
     logic branch;
     logic memtoreg;
 
@@ -55,8 +53,10 @@ module cpu #(parameter PROG_MEM_WORDS = 1024) (
         .funct(funct),
         .regdest(regdest),
         .regwrite(regwrite),
-        .alusrc(alusrc),
+        .alusrcA(alusrcA),
+        .alusrcB(alusrcB),
         .jump(jump),
+        .jump_return(jump_return),
         .branch(branch),
         .memread(memread),
         .memwrite(memwrite),
@@ -77,16 +77,16 @@ module cpu #(parameter PROG_MEM_WORDS = 1024) (
 
     alu alu_ (
         .op(aluop),
-        .A((alusrc == 2'd2) ? reg_readdata2 : reg_readdata1),
-        .B((alusrc == 2'd0) ? reg_readdata2 : (alusrc == 2'd1) ? immediate : shamt),
+        .A(alusrcA ? reg_readdata2 : reg_readdata1),
+        .B((alusrcB == 2'd0) ? reg_readdata2 : (alusrcB == 2'd1) ? immediate : shamt),
         .result(alu_result),
         .zero(alu_zero)
     );
 
     // memory I/O
 
-    always @* mem_addr = alu_result;
-    always @* mem_writedata = reg_readdata2;
+    assign mem_addr = alu_result;
+    assign mem_writedata = reg_readdata2;
 
     // register file
 
@@ -105,14 +105,22 @@ module cpu #(parameter PROG_MEM_WORDS = 1024) (
     );
 
     // branching logic
-    logic [11:0] branchaddr;
+    logic [11:0] branchaddr, pc_next;
     assign branchaddr = program_counter + immediate[11:0] + 12'b1;
+    
+    always_comb begin
+        if (branch && alu_zero) pc_next = branchaddr;
+        else if (jump) pc_next = jumpaddr;
+        else if (jump_return) pc_next = reg_readdata1;
+        else pc_next = program_counter + 12'b1;
+    end
 
+    // updating on clock cycle
     always @(posedge clk) begin
         if (reset) begin
             program_counter <= 12'b0;
         end else begin
-            program_counter <= (branch && alu_zero) ? branchaddr : jump ? jumpaddr : program_counter + 12'b1;
+            program_counter <= pc_next;
         end
     end
 

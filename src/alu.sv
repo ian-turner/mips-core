@@ -7,15 +7,15 @@ module alu (
 );
 
     assign result =
-        (op == 4'd0) ? A & B :
-        (op == 4'd1) ? A | B :
-        (op == 4'd2) ? A + B :
-        (op == 4'd3) ? A << B :
-        (op == 4'd4) ? A >> B :
-        (op == 4'd6) ? A - B :
-        (op == 4'b0111) ? (A < B) :
-        (op == 4'b1100) ? ~(A | B) :
-        32'b0;
+        (op == 4'd0) ? A & B
+        : (op == 4'd1) ? A | B 
+        : (op == 4'd2) ? A + B
+        : (op == 4'd3) ? A << B 
+        : (op == 4'd4) ? A >> B 
+        : (op == 4'd6) ? A - B 
+        : (op == 4'd7) ? (A < B) 
+        : (op == 4'd12) ? ~(A | B) 
+        : 32'b0;
 
     assign zero = result == 32'b0;
 

@@ -1,10 +1,7 @@
 module decoder (
     input logic [31:0] instruction,
     output logic [5:0] opcode,
-    output logic [4:0] rs,
-    output logic [4:0] rt,
-    output logic [4:0] rd,
-    output logic [4:0] shamt,
+    output logic [4:0] rs, rt, rd, shamt,
     output logic [5:0] funct,
     output logic [31:0] immediate,
     output logic [11:0] jumpaddr

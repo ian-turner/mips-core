@@ -1,17 +1,21 @@
+# Program that stores the switch value to the
+# seven-segment displays in hexadecimal when
+# the center button is pressed
+
 
 # -- Loading addresses --
-addi $1, $0, 0x400			# hex
-addi $2, $0, 0x408			# btnC
-addi $3, $0, 0x404			# switch
+addi $1, $0, 0x400			    # hex
+addi $2, $0, 0x408			    # btnC
+addi $3, $0, 0x404			    # switch
 
+addi $4, $0, 1 				    # storing constant 1
 
-addi $4, $0, 1 				# storing constant 1
 
 # -- Inifinite loop --
 Loop:
 
-lw $5, 0($2)				# loading button value
-beq $4, $5, Store			# jump to store function if button is pressed
+lw $5, 0($2)                    # loading button value
+beq $4, $5, Store               # jump to store function if button is pressed
 
 j Loop
 

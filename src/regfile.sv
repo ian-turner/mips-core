@@ -18,4 +18,8 @@ module regfile (
         if (regwrite) mem[rd] <= writedata;
     end
 
+    initial begin
+        mem[29] = 32'd1000;
+    end
+
 endmodule
